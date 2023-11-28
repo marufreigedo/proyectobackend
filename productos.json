@@ -1,0 +1,86 @@
+[
+  {
+    "title": "Televisor",
+    "description": "Este televisor es un modelo de alta gama con una pantalla de 4K Ultra HD que ofrece una resolución cuatro veces superior a la de un televisor Full HD. Cuenta con tecnología HDR para proporcionar colores más vivos y un contraste más nítido.",
+    "code": "A1234",
+    "price": 12000,
+    "status": true,
+    "stock": 100,
+    "category": "Electrónicos",
+    "thumbnails": [
+      "url1",
+      "url2"
+    ],
+    "id": "664709"
+  },
+  {
+    "title": "Smartphone Samsung Galaxy S21",
+    "description": "Potente smartphone con pantalla AMOLED de 6.2 pulgadas, cámara triple de 64 MP, 8 GB de RAM y 128 GB de almacenamiento.",
+    "code": "SAMSUNG_S21",
+    "price": 200,
+    "status": true,
+    "stock": 25,
+    "category": "Electrónicos",
+    "thumbnails": [
+      "url11",
+      "url12"
+    ],
+    "id": "66938"
+  },
+  {
+    "title": "Cámara Mirrorless Sony Alpha A6400",
+    "description": "Cámara digital sin espejo con sensor APS-C, enfoque automático rápido, grabación de video 4K y pantalla abatible.",
+    "code": "SONY_A6400",
+    "price": 1199.99,
+    "status": true,
+    "stock": 15,
+    "category": "Electrónicos",
+    "thumbnails": [
+      "url13",
+      "url14"
+    ],
+    "id": "41739"
+  },
+  {
+    "title": "Consola de Videojuegos Xbox Series X",
+    "description": "Potente consola de nueva generación con capacidad 4K, SSD de alta velocidad y compatibilidad con juegos de Xbox anteriores.",
+    "code": "XBOX_SERIES_X",
+    "price": 499.99,
+    "status": true,
+    "stock": 20,
+    "category": "Electrónicos",
+    "thumbnails": [
+      "url15",
+      "url16"
+    ],
+    "id": "484662"
+  },
+  {
+    "title": "Teclado Mecánico Corsair K95 RGB Platinum",
+    "description": "Teclado mecánico para juegos con interruptores Cherry MX, retroiluminación RGB, y construcción de aluminio de calidad premium.",
+    "code": "CORSAIR_K95",
+    "price": 169,
+    "status": true,
+    "stock": 12,
+    "category": "Electrónicos",
+    "thumbnails": [
+      "url21",
+      "url22"
+    ],
+    "id": "849221"
+  },
+  {
+    "title": "Teclado Mecánico Corsair K95 RGB Platinum",
+    "description": "Teclado mecánico para juegos con interruptores Cherry MX, retroiluminación RGB, y construcción de aluminio de calidad premium.",
+    "code": "CORSAIR_K95",
+    "price": 169,
+    "status": true,
+    "stock": 12,
+    "category": "Electrónicos",
+    "thumbnails": [
+      "url21",
+      "url22"
+    ],
+    "id": "671538"
+  }
+]
