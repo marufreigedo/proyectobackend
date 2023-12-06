@@ -1,0 +1,32 @@
+<main>
+  <div class="swiper-container">
+    <h3>PRODUCTOS</h3>
+    <div class="swiper-wrapper" id="swiper">
+      {{#each product}}
+      <div class="swiper-slide">
+        <img src={{this.thumbnails.[0]}}>
+        <p class="sw-title">{{this.title}}</p>
+        <p class="sw-price">$ {{this.price}}</p>
+      </div>
+      {{/each}}
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.3/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    socket.on('productAdded', (newProduct) => {
+      // Lógica para agregar el nuevo producto a la lista en tiempo real
+      console.log('Nuevo producto agregado:', newProduct);
+      // Puedes agregar aquí lógica para actualizar la lista en la interfaz de usuario
+    });
+
+    socket.on('productDeleted', (deletedProduct) => {
+      // Lógica para eliminar el producto de la lista en tiempo real
+      console.log('Producto eliminado:', deletedProduct);
+      // Puedes agregar aquí lógica para actualizar la lista en la interfaz de usuario
+    });
+  </script>
+</main>

@@ -1,7 +1,7 @@
 const fs = require('fs/promises');
 const path = require('path');
 
-const productsFilePath = path.join(__dirname, '../productos.json');
+const productsFilePath = path.join(__dirname, '../src/mock/productos');
 
 async function readProductsFile() {
   try {
@@ -35,7 +35,7 @@ const productManager = {
     }
   },
 
-  addProduct: async (req, res) => {
+  addProduct: async (req, res, io) => {
     const newProduct = req.body;
     const products = await readProductsFile();
 
@@ -49,6 +49,8 @@ const productManager = {
 
     products.push(newProduct);
     await writeProductsFile(products);
+
+    io.emit('productAdded', newProduct); 
 
     res.json({ message: 'Producto agregado con éxito', product: newProduct });
   },
@@ -69,7 +71,7 @@ const productManager = {
     }
   },
 
-  deleteProduct: async (req, res) => {
+  deleteProduct: async (req, res, io) => {
     const products = await readProductsFile();
     const productId = req.params.pid;
     const productIndex = products.findIndex(p => p.id === productId);
@@ -77,6 +79,8 @@ const productManager = {
     if (productIndex !== -1) {
       const deletedProduct = products.splice(productIndex, 1);
       await writeProductsFile(products);
+
+      io.emit('productDeleted', deletedProduct); 
       res.json({ message: 'Producto eliminado con éxito', product: deletedProduct });
     } else {
       res.status(404).json({ message: 'Producto no encontrado' });

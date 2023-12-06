@@ -1,6 +1,6 @@
 const express = require('express');
 const cartRouter = express.Router();
-const cartManager = require('../src/cartManager');
+const cartManager = require('../manager/cartManager');
 
 cartRouter.post('/', cartManager.createCart);
 cartRouter.get('/:cid', cartManager.getCartById);

@@ -9,7 +9,7 @@ async function readCartsFile() {
     return JSON.parse(data);
   } catch (error) {
     console.error(`Error al leer el archivo de carritos: ${error.message}`);
-    throw error; 
+    throw error;
   }
 }
 
@@ -18,12 +18,28 @@ async function writeCartsFile(carts) {
     await fs.writeFile(cartsFilePath, JSON.stringify(carts, null, 2), 'utf-8');
   } catch (error) {
     console.error(`Error al escribir en el archivo de carritos: ${error.message}`);
-    throw error; 
+    throw error;
   }
 }
 
+function generateUniqueId(existingCarts) {
+  let newId;
+  do {
+    newId = Math.floor(Math.random() * 1000000).toString();
+  } while (existingCarts.some(cart => cart.cartId === newId));
+  return newId;
+}
+
+function isValidProductId(productId) {
+  return true;
+}
+
+function isValidCartId(cartId) {
+  return true;
+}
+
 const cartManager = {
-  createCart: async (req, res) => {
+  createCart: async (req, res, io) => {
     try {
       const newCart = req.body;
 
@@ -33,13 +49,16 @@ const cartManager = {
 
       const carts = await readCartsFile();
 
-      // Autogenerar ID único
+      // Autogenera ID único
       newCart.cartId = generateUniqueId(carts);
 
       carts.push(newCart);
       await writeCartsFile(carts);
 
       res.json({ message: 'Carrito creado con éxito', cart: newCart });
+
+      io.emit('cartUpdated', carts);
+
     } catch (error) {
       res.status(500).json({ message: 'Error interno del servidor' });
     }
@@ -61,7 +80,7 @@ const cartManager = {
     }
   },
 
-  addProductToCart: async (req, res) => {
+  addProductToCart: async (req, res, io) => {
     try {
       const productId = req.params.pid;
       const cartId = req.params.cid;
@@ -86,6 +105,9 @@ const cartManager = {
 
         await writeCartsFile(carts);
         res.json({ message: 'Producto agregado al carrito con éxito', cart: carts[cartIndex] });
+
+        io.emit('cartUpdated', carts);
+
       } else {
         res.status(404).json({ message: 'Carrito no encontrado' });
       }
@@ -94,21 +116,5 @@ const cartManager = {
     }
   },
 };
-
-function generateUniqueId(existingCarts) {
-  let newId;
-  do {
-    newId = Math.floor(Math.random() * 1000000).toString();
-  } while (existingCarts.some(cart => cart.cartId === newId));
-  return newId;
-}
-
-function isValidProductId(productId) {
-  return true; 
-}
-
-function isValidCartId(cartId) {
-  return true; 
-}
 
 module.exports = cartManager;

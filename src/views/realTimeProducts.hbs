@@ -1,0 +1,67 @@
+<main>
+  <div class="swiper-container">
+    <h3>PRODUCTOS EN TIEMPO REAL</h3>
+    <div class="swiper-wrapper" id="swiper">
+      {{#each product}}
+      <div class="swiper-slide">
+        <img src={{this.thumbnail}}>
+        <p class="sw-title">{{this.title}}</p>
+        <p class="sw-price">Precio: $ {{this.price}}</p>
+        <p class="sw-code">Código: {{this.code}}</p>
+        <button onclick="deletePrd('{{this.code}}')">Eliminar</button>
+      </div>
+      {{/each}}
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+
+  <form id="formRTP" class="formRTP" onsubmit="addProductWS(event)">
+    <div class="formcol">
+      <div>
+        <label for="frimage">Dirección Imagen</label>
+        <input type="text" name="frimage" id="frimage" value="https://www.lg.com/ar/images/televisores/md06198536/gallery/DES_1_N.jpg">
+      </div>
+      <div>
+        <label for="frtitle">Producto</label>
+        <input type="text" name="frtitle" id="frtitle" value='TELEVISOR'>
+      </div>
+      <!-- Otros campos del formulario... -->
+
+      <input class="frButton" type="submit" value="Cargar Producto" id="frButton">
+    </div>
+  </form>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.3/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    socket.on('productAdded', (newProduct) => {
+      // Lógica para agregar el nuevo producto a la lista en tiempo real
+      console.log('Nuevo producto agregado:', newProduct);
+      // Puedes agregar aquí lógica para actualizar la lista en la interfaz de usuario
+    });
+
+    socket.on('productDeleted', (deletedProduct) => {
+      // Lógica para eliminar el producto de la lista en tiempo real
+      console.log('Producto eliminado:', deletedProduct);
+      // Puedes agregar aquí lógica para actualizar la lista en la interfaz de usuario
+    });
+
+    function deletePrd(productCode) {
+      // Lógica para eliminar un producto y emitir el evento al servidor
+      socket.emit('deleteProduct', productCode);
+    }
+
+    function addProductWS(event) {
+      event.preventDefault();
+      // Lógica para agregar el producto utilizando WebSockets
+      const newProduct = {
+        // Obtén los valores de los campos del formulario y crea el objeto newProduct
+        image: document.getElementById('frimage').value,
+        title: document.getElementById('frtitle').value,
+        // Otros campos...
+      };
+      socket.emit('addProduct', newProduct);
+    }
+  </script>
+</main>
