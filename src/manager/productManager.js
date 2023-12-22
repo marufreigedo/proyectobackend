@@ -1,4 +1,3 @@
-// En manager/productManager.js
 const Product = require('../dao/models/product.model');
 
 const productManager = {
