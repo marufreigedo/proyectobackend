@@ -1,6 +1,8 @@
 const express = require('express');
 const productRouter = express.Router();
 const productManager = require('../manager/productManager');
+const mongoose = require('mongoose');
+const Product = require('../dao/models/product.model');
 
 module.exports = (io) => {
   productRouter.get('/', productManager.getAllProducts);

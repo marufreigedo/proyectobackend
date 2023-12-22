@@ -1,99 +1,89 @@
-const fs = require('fs/promises');
-const path = require('path');
-
-const productsFilePath = path.join(__dirname, '../src/mock/productos');
-
-async function readProductsFile() {
-  try {
-    const data = await fs.readFile(productsFilePath, 'utf-8');
-    return JSON.parse(data);
-  } catch (error) {
-    // Si el archivo no existe, devuelve un array vacío
-    return [];
-  }
-}
-
-async function writeProductsFile(products) {
-  await fs.writeFile(productsFilePath, JSON.stringify(products, null, 2), 'utf-8');
-}
+// En manager/productManager.js
+const Product = require('../dao/models/product.model');
 
 const productManager = {
   getAllProducts: async (req, res) => {
-    const products = await readProductsFile();
-    res.json(products);
+    try {
+      const products = await Product.find();
+      res.json(products);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error al obtener todos los productos' });
+    }
   },
 
   getProductById: async (req, res) => {
-    const products = await readProductsFile();
-    const productId = req.params.pid;
-    const product = products.find(p => p.id === productId);
+    try {
+      const productId = req.params.pid;
+      const product = await Product.findOne({ id: productId });
 
-    if (product) {
-      res.json(product);
-    } else {
-      res.status(404).json({ message: 'Producto no encontrado' });
+      if (product) {
+        res.json(product);
+      } else {
+        res.status(404).json({ message: 'Producto no encontrado' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error al obtener el producto por ID' });
     }
   },
 
   addProduct: async (req, res, io) => {
-    const newProduct = req.body;
-    const products = await readProductsFile();
+    try {
+      const newProduct = req.body;
 
-    // Autogenera ID único
-    newProduct.id = generateUniqueId(products);
+      const createdProduct = await Product.create(newProduct);
 
-    // Valida campos obligatorios
-    if (!newProduct.title || !newProduct.description || !newProduct.code || !newProduct.price) {
-      return res.status(400).json({ message: 'Campos obligatorios incompletos' });
+      io.emit('productAdded', createdProduct);
+
+      res.json({ message: 'Producto agregado con éxito', product: createdProduct });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error al agregar el producto' });
     }
-
-    products.push(newProduct);
-    await writeProductsFile(products);
-
-    io.emit('productAdded', newProduct); 
-
-    res.json({ message: 'Producto agregado con éxito', product: newProduct });
   },
 
   updateProduct: async (req, res) => {
-    const products = await readProductsFile();
-    const productId = req.params.pid;
-    const productIndex = products.findIndex(p => p.id === productId);
+    try {
+      const productId = req.params.pid;
 
-    if (productIndex !== -1) {
-      // Actualiza el producto con los datos del body, excepto el id
-      const updatedProduct = { ...products[productIndex], ...req.body, id: productId };
-      products[productIndex] = updatedProduct;
-      await writeProductsFile(products);
-      res.json({ message: 'Producto actualizado con éxito', product: updatedProduct });
-    } else {
-      res.status(404).json({ message: 'Producto no encontrado' });
+      const updatedProduct = await Product.findOneAndUpdate(
+        { id: productId },
+        { $set: req.body },
+        { new: true }
+      );
+
+      if (updatedProduct) {
+        io.emit('productUpdated', updatedProduct);
+
+        res.json({ message: 'Producto actualizado con éxito', product: updatedProduct });
+      } else {
+        res.status(404).json({ message: 'Producto no encontrado' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error al actualizar el producto' });
     }
   },
 
   deleteProduct: async (req, res, io) => {
-    const products = await readProductsFile();
-    const productId = req.params.pid;
-    const productIndex = products.findIndex(p => p.id === productId);
+    try {
+      const productId = req.params.pid;
 
-    if (productIndex !== -1) {
-      const deletedProduct = products.splice(productIndex, 1);
-      await writeProductsFile(products);
+      const deletedProduct = await Product.findOneAndDelete({ id: productId });
 
-      io.emit('productDeleted', deletedProduct); 
-      res.json({ message: 'Producto eliminado con éxito', product: deletedProduct });
-    } else {
-      res.status(404).json({ message: 'Producto no encontrado' });
+      if (deletedProduct) {
+        io.emit('productDeleted', deletedProduct);
+
+        res.json({ message: 'Producto eliminado con éxito', product: deletedProduct });
+      } else {
+        res.status(404).json({ message: 'Producto no encontrado' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error al eliminar el producto' });
     }
   },
 };
-
-function generateUniqueId(existingProducts) {
-  let newId;
-  do {
-    newId = Math.floor(Math.random() * 1000000).toString();
-  } while (existingProducts.some(product => product.id === newId));
-  return newId;
-}
 
 module.exports = productManager;

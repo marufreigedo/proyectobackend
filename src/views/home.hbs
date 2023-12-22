@@ -18,15 +18,15 @@
     const socket = io();
 
     socket.on('productAdded', (newProduct) => {
-      // Lógica para agregar el nuevo producto a la lista en tiempo real
+      
       console.log('Nuevo producto agregado:', newProduct);
-      // Puedes agregar aquí lógica para actualizar la lista en la interfaz de usuario
+      
     });
 
     socket.on('productDeleted', (deletedProduct) => {
-      // Lógica para eliminar el producto de la lista en tiempo real
+
       console.log('Producto eliminado:', deletedProduct);
-      // Puedes agregar aquí lógica para actualizar la lista en la interfaz de usuario
+      
     });
   </script>
 </main>

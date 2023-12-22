@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{title}}</title>
   <link rel="stylesheet" href="{{cssPlus}}">
-  <!-- Agrega aquí cualquier otra hoja de estilo que necesites -->
 </head>
 
 <body>
@@ -26,25 +25,24 @@
 
   <footer>
     <div id="copyright">
-      <!-- Contenido del pie de página -->
     </div>
   </footer>
   
-  <!-- Incluye cualquier script adicional que necesites -->
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.3/socket.io.js"></script>
   <script>
     const socket = io();
 
     socket.on('productAdded', (newProduct) => {
-      // Lógica para agregar el nuevo producto a la lista en tiempo real
+      
       console.log('Nuevo producto agregado:', newProduct);
-      // Puedes agregar aquí lógica para actualizar la lista en la interfaz de usuario
+      
     });
 
     socket.on('productDeleted', (deletedProduct) => {
-      // Lógica para eliminar el producto de la lista en tiempo real
+     
       console.log('Producto eliminado:', deletedProduct);
-      // Puedes agregar aquí lógica para actualizar la lista en la interfaz de usuario
+    
     });
   </script>
 </body>
