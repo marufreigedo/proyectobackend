@@ -3,8 +3,47 @@ const Product = require('../dao/models/product.model');
 const productManager = {
   getAllProducts: async (req, res) => {
     try {
-      const products = await Product.find();
-      res.json(products);
+      const { limit = 10, page = 1, sort, query, category, availability } = req.query;
+
+      const filter = {};
+      if (query) {
+        filter.$or = [
+          { category: { $regex: query, $options: 'i' } },
+          { title: { $regex: query, $options: 'i' } },
+        ];
+      }
+      if (category) {
+        filter.category = category;
+      }
+      if (availability !== undefined) {
+        filter.availability = availability;
+      }
+
+      const sortOrder = sort === 'desc' ? -1 : 1;
+      const products = await Product.find(filter)
+        .limit(parseInt(limit))
+        .skip((page - 1) * limit)
+        .sort({ price: sortOrder });
+
+      const totalProducts = await Product.countDocuments(filter);
+      const totalPages = Math.ceil(totalProducts / limit);
+      const hasPrevPage = page > 1;
+      const hasNextPage = page < totalPages;
+
+      const result = {
+        status: 'success',
+        payload: products,
+        totalPages,
+        prevPage: hasPrevPage ? page - 1 : null,
+        nextPage: hasNextPage ? page + 1 : null,
+        page,
+        hasPrevPage,
+        hasNextPage,
+        prevLink: hasPrevPage ? `/api/products?limit=${limit}&page=${page - 1}` : null,
+        nextLink: hasNextPage ? `/api/products?limit=${limit}&page=${page + 1}` : null,
+      };
+
+      res.json(result);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error al obtener todos los productos' });

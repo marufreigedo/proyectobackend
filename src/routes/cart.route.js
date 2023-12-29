@@ -1,11 +1,14 @@
+
 const express = require('express');
 const cartRouter = express.Router();
 const cartManager = require('../manager/cartManager');
-const mongoose = require('mongoose');
-const Cart = require('../dao/models/models/cart.model');
 
 cartRouter.post('/', cartManager.createCart);
 cartRouter.get('/:cid', cartManager.getCartById);
-cartRouter.post('/:cid/product/:pid', cartManager.addProductToCart);
+cartRouter.post('/:cid/products/:pid', cartManager.addProductToCart);
+cartRouter.delete('/:cid/products/:pid', cartManager.deleteProductFromCart);
+cartRouter.put('/:cid', cartManager.updateCart);
+cartRouter.put('/:cid/products/:pid', cartManager.updateProductQuantityInCart);
+cartRouter.delete('/:cid', cartManager.deleteAllProductsFromCart);
 
 module.exports = cartRouter;
