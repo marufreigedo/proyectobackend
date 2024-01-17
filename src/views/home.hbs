@@ -1,16 +1,22 @@
+
 <main>
-  <div class="swiper-container">
-    <h3>PRODUCTOS</h3>
-    <div class="swiper-wrapper" id="swiper">
-      {{#each product}}
+  {{#if user}}
+    <p>Bienvenido, {{user.email}} (Rol: {{user.role}})</p>
+    <form action="/auth/logout" method="post">
+      <button type="submit">Cerrar sesión</button>
+    </form>
+  {{/if}}
+
+  <h3>PRODUCTOS</h3>
+  
+  <div class="swiper-container" id="swiper">
+    {{#each product}}
       <div class="swiper-slide">
         <img src={{this.thumbnails.[0]}}>
         <p class="sw-title">{{this.title}}</p>
         <p class="sw-price">$ {{this.price}}</p>
       </div>
-      {{/each}}
-    </div>
-    <div class="swiper-pagination"></div>
+    {{/each}}
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.3/socket.io.js"></script>
@@ -18,15 +24,11 @@
     const socket = io();
 
     socket.on('productAdded', (newProduct) => {
-      
       console.log('Nuevo producto agregado:', newProduct);
-      
     });
 
     socket.on('productDeleted', (deletedProduct) => {
-
       console.log('Producto eliminado:', deletedProduct);
-      
     });
   </script>
 </main>
